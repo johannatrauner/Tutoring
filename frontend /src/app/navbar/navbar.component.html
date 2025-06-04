@@ -1,0 +1,120 @@
+<nav class="relative bg-lila shadow-md px-6 py-4 flex justify-between items-center">
+  <div class="flex items-center space-x-2">
+    <img
+      alt="Logo"
+      class="h-12 w-auto cursor-pointer"
+      routerLink="/"
+      src="assets/tutoria_logo.png"
+    >
+  </div>
+  <div class="hidden md:flex space-x-6 items-center text-lila-dark font-medium">
+    <a class="hover:text-lila-light" routerLink="/subjects" routerLinkActive="underline">
+      Fächer
+    </a>
+    <a class="hover:text-lila-light" routerLink="/user-list" routerLinkActive="underline">
+      Tutor:innen
+    </a>
+    @if (isLoggedIn() && isTutor()) {
+      <a
+        routerLink="/tutor/tutor-section"
+        class="hover:text-lila-light"
+        routerLinkActive="underline"
+      >
+        Meine Angebote
+      </a>
+    }
+
+    @if (isLoggedIn()) {
+      <a
+        routerLink="/profile"
+        class="hover:text-lila-light"
+        routerLinkActive="underline"
+      >
+        Profil
+      </a>
+    }
+
+    <a
+      class="bg-yellow px-6 py-2 rounded-full hover:bg-yellow-accent transition"
+      routerLink="/login"
+    >
+      {{ getLoginLabel() }}
+    </a>
+  </div>
+  <button
+    (click)="toggleMenu()"
+    aria-label="Menü umschalten"
+    class="md:hidden focus:outline-none cursor-pointer"
+  >
+    <svg
+      class="w-6 h-6 text-lila-dark"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M4 6h16M4 12h16M4 18h16"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      />
+    </svg>
+  </button>
+  <div
+    [class.block]="isMenuOpen()"
+    [class.hidden]="!isMenuOpen()"
+    class="absolute top-full left-0 w-full bg-lila  shadow-md md:hidden"
+  >
+    <ul class="flex flex-col space-y-2 p-4">
+      <li>
+        <a
+          (click)="toggleMenu()"
+          class="block py-2 hover:text-yellow"
+          routerLink="/subjects"
+        >
+          Fächer
+        </a>
+      </li>
+      <li>
+        <a
+          (click)="toggleMenu()"
+          class="block py-2 hover:text-yellow"
+          routerLink="/user-list"
+        >
+          Tutor:innen
+        </a>
+      </li>
+      @if (isLoggedIn() && isTutor()) {
+        <li>
+          <a
+            routerLink="/tutor/tutor-section"
+            class="block py-2 hover:text-yellow"
+            (click)="toggleMenu()"
+          >
+            Meine Nachhilfestunden
+          </a>
+        </li>
+      }
+      @if (isLoggedIn()) {
+        <li>
+          <a
+            routerLink="/profile"
+            class="block py-2 hover:text-yellow"
+            (click)="toggleMenu()"
+          >
+            Profil
+          </a>
+        </li>
+      }
+      <li>
+        <a
+          (click)="toggleMenu()"
+          class="block bg-yellow text-lila-dark px-4 py-2 rounded-full hover:bg-yellow-accent transition"
+          routerLink="/login">
+          {{ getLoginLabel() }}
+        </a>
+      </li>
+    </ul>
+  </div>
+</nav>

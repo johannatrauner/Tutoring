@@ -1,0 +1,157 @@
+<div class="p-[48px] max-w-5xl">
+  <!--Header -->
+  @if (isUpdatingSession) {
+    <h1 class="text-5xl font-bold mb-6">Nachhilfestunde bearbeiten</h1>
+  } @else {
+    <h1 class="text-5xl font-bold mb-6">Neue Nachhilfestunde anlegen</h1>
+  }
+
+  <!-- Form -->
+  <form [formGroup]="sessionForm" (ngSubmit)="onSubmit()">
+    @if (isUpdatingSession) {
+      <p class="bg-white/60 rounded-lg text-lg p-4 mb-6 shadow-sm w-max">
+        <span class="font-semibold">Thema:</span> {{ selectedSubject.title }} <br>
+        <span class="text-sm text-gray-500">Beim Bearbeiten kann das Fach nicht geändert werden.</span>
+      </p>
+    } @else {
+      <label class="font-medium">
+        Fach auswählen
+        <span class="text-xs block text-gray-700">
+            (Für eine Nachhilfestunde muss ein Fach gewählt werden.)
+          </span>
+      </label>
+      @if (subjects.length === 0) {
+        <div class="my-2 bg-red-100 border border-red-400 text-red-800 rounded-lg w-full p-6 mb-6 shadow-sm">
+          <h1 class="font-semibold mb-2">Es gibt noch keine Themen!</h1>
+          <p class="text-sm mb-4">Bitte erstelle ein Thema, bevor du ein Thema erstellst.</p>
+          <button
+            [routerLink]="['/tutor/subject-form']"
+            class="bg-yellow px-6 py-2 text-lila-dark rounded-full hover:bg-yellow-strong transition cursor-pointer">
+            Neues Fach erstellen
+          </button>
+        </div>
+      } @else {
+        <select
+          formControlName="subject_id"
+          class="w-full border bg-white/40 border-gray-300 rounded-lg p-2 shadow-sm focus:ring-lila-accent focus:border-lila-accent transition my-1"
+        >
+          @for (subject of subjects; track subject.id) {
+            <option [value]="subject.id">{{ subject.title }}</option>
+          }
+        </select>
+      }
+    }
+    @if (errors['subject_id']) {
+      <p class="text-red-500 text-sm">{{ errors['subject_id'] }}</p>
+    }
+    <div class="flex flex-col space-y-2">
+      @if (isUpdatingSession) {
+        <p class="bg-white/60 rounded-lg text-lg p-4 mb-6 shadow-sm w-max">
+          <span class="font-semibold">Thema:</span> {{ selectedTopic.title }} <br>
+          <span class="text-sm text-gray-500">Beim Bearbeiten kann das Thema nicht geändert werden.</span>
+        </p>
+
+      } @else {
+        <label class="font-medium mt-4">
+          Thema auswählen
+          <span class="text-xs  text-gray-700 block">
+            (Für die Nachhilfestunde muss ein Thema ausgewählt werden.)
+          </span>
+        </label>
+
+        @if (topics.length === 0 && isSubjectSelected) {
+          <div class="bg-red-100 border border-red-400 text-red-800 rounded-lg w-full p-6 mb-6 shadow-sm">
+            <h1 class="font-semibold mb-2">Es gibt noch keine Themen!</h1>
+            <p class="text-sm mb-4">Bitte erstelle ein Thema, bevor du ein Thema erstellst.</p>
+            <button
+              [routerLink]="['/tutor/topic-form']"
+              class="bg-yellow px-6 py-2 text-lila-dark rounded-full hover:bg-yellow-strong transition cursor-pointer">
+              Neues Thema erstellen
+            </button>
+          </div>
+        } @else {
+          <select
+            formControlName="topic_id"
+            class="w-full border border-gray-300 bg-white/40 rounded-lg p-2 shadow-sm focus:ring-lila-accent focus:border-lila-accent transition "
+          >
+            @for (topic of topics; track topic.id) {
+              <option [value]="topic.id">{{ topic.title }}</option>
+            }
+          </select>
+        }
+      }
+      @if (errors['topic_id']) {
+        <p class="text-red-500 text-sm">{{ errors['topic_id'] }}</p>
+      }
+    </div>
+    <div formArrayName="sessions" class="mt-8">
+      @for (session of session.controls; let i = $index; track session) {
+        <div [formGroupName]="$index" class="item-group w-full">
+          <div class="flex items-end justify-between space-x-4">
+            <label class="flex flex-col my-2">
+              Startzeit
+              <input
+                type="datetime-local"
+                formControlName="start_time"
+                class=" w-max border border-gray-300 rounded-lg p-2 shadow-sm focus:ring-lila-accent focus:border-lila-accent transition duration-200"/>
+            </label>
+            <label class="flex flex-col my-2">
+              Endzeit
+              <input
+                type="datetime-local"
+                formControlName="end_time"
+                class="w-max border border-gray-300 rounded-lg p-2 shadow-sm focus:ring-lila-accent focus:border-lila-accent transition duration-200"/>
+            </label>
+            <label>
+              Kommentar
+              <input type="text"
+                     class="w-full border border-gray-300 rounded-lg p-2 shadow-sm focus:ring-lila-accent focus:border-lila-accent transition my-1"
+                     formControlName="comment"/>
+            </label>
+            <button type="button"
+                    class="bg-red-800 text-white rounded-full px-4 py-2 mb-2 cursor-pointer hover:bg-red-400"
+                    (click)="removeItem($index)">löschen
+            </button>
+          </div>
+        </div>
+        @if (session.get('start_time')!.hasError('required')
+        && session.get('start_time')!.touched) {
+          <p class="text-red-500 text-sm">Bitte fülle Start aus!</p>
+        }
+        @if (session.get('end_time')!.invalid && session.get('end_time')!.touched) {
+          <p class="text-red-500 text-sm">Bitte fülle Ende aus!</p>
+        }
+        @if (session.errors?.['dateOrder'] && session.touched) {
+          <p class="text-red-500 text-sm">Ende muss nach Start liegen!</p>
+        }
+        @if (session.get('start_time')!.hasError('startTimeInPast')) {
+          <p class="text-red-500 text-sm">Das angelegte Datum muss in der Zukunft liegen!</p>
+        }
+      }
+    </div>
+    <div class="w-full flex justify-end mt-4">
+      <button
+        type="button"
+        (click)="addSession()"
+        class="
+                  w-max
+                  px-6 py-2
+                  rounded-full
+                  border border-lila-accent
+                  text-lila-dark font-semibold
+                  shadow-md
+                   transition-all duration-300 ease-in-out
+                  hover:bg-lila-accent hover:text-white
+                  hover:shadow-lg hover:shadow-lila-accent
+                  cursor-pointer">
+        Nachhilfe hinzufügen
+      </button>
+    </div>
+    <button
+      [disabled]="sessionForm.invalid"
+      type="submit"
+      class="bg-yellow text-gray-900 px-6 py-2 rounded-full hover:bg-yellow-strong disabled:opacity-50 disabled:cursor-not-allowed transition w-max space-y-2 cursor-pointer">
+      Speichern
+    </button>
+  </form>
+</div>

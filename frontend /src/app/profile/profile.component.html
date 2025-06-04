@@ -1,0 +1,73 @@
+@let currentUser = user();
+@let sessions    = seekerSessions();
+
+<div class="max-w-5xl  p-[48px] space-y-12  rounded-xl">
+  <header>
+    <h1 class="text-5xl font-extrabold">Servus {{ currentUser?.first_name }}</h1>
+  </header>
+
+  <!-- User-Info -->
+  <section class="space-y-6 bg-white/60 border border-gray-200 p-6 rounded-2xl shadow-sm">
+    <p class="text-gray-800">
+      <span class="font-semibold text-gray-900">Vorname:</span> {{ currentUser?.first_name }}
+    </p>
+    <p class="text-gray-800">
+      <span class="font-semibold text-gray-900">Nachname:</span> {{ currentUser?.last_name }}
+    </p>
+    <p class="text-gray-800">
+      <span class="font-semibold text-gray-900">E-Mail:</span> {{ currentUser?.email }}
+    </p>
+    <p class="text-gray-800">
+      <span class="font-semibold text-gray-900">Handynummer:</span> {{ currentUser?.phone }}
+    </p>
+    <p class="text-gray-800">
+      <span class="font-semibold text-gray-900">Beschreibung:</span> {{ currentUser?.description }}
+    </p>
+    <p class="text-gray-800">
+      <span class="font-semibold text-gray-900">Studium:</span> {{ currentUser?.study_program }}
+    </p>
+    <p class="text-sm text-red-800 bg-red-100 border border-red-300 p-3 rounded-md">
+      Ändern kannst du diese leider nicht, da die Daten gesetzt wurden – wie bei einem Feld 🌾
+    </p>
+  </section>
+
+  @if(currentUser?.role ==='seeker') {
+    <div>
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+        gebuchte Nachhilfestunden
+      </h2>
+      <div class="space-y-4">
+
+        <!-- 1. Section: Upcoming Sessions -->
+        <h3 class="text-xl font-semibold mb-2">Zukünftige Nachhilfestunden</h3>
+        @if(upcomingSessions().length === 0) {
+          <p class="text-gray-500 italic">Du hast keine zukünftigen Nachhilfestunden.</p>
+        } @else {
+          @for (session of upcomingSessions(); track session.id) {
+            <bs-tutoring-session-item
+              [role]="currentUser?.role"
+              [session]="session"
+              [past]="false"
+            />
+          }
+        }
+
+        <div class="my-4 border-t border-white"></div>
+        <!-- 2. Section: Past Sessions -->
+        <h3 class="text-xl font-semibold mb-2">vergangene Nachhilfestunden</h3>
+
+        @if(pastSessions().length === 0) {
+          <p class="text-gray-500 italic">Du hast keine vergangenen Nachhilfestunden</p>
+        } @else {
+          @for (session of pastSessions(); track session.id) {
+            <bs-tutoring-session-item
+              [role]="currentUser?.role"
+              [session]="session"
+              [past]="true"
+            />
+          }
+        }
+      </div>
+    </div>
+  }
+</div>

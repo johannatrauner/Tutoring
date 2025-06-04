@@ -1,0 +1,122 @@
+@let top = topic();
+
+<div class="max-w-5xl p-[48px] space-y-12 rounded-xl">
+  <!-- Title & Description -->
+  <header class="space-y-4">
+    <h1 class="text-5xl font-extrabold ">{{ top?.title }}</h1>
+    <p class="text-lg text-gray-700 leading-relaxed">{{ top?.description }}</p>
+  </header>
+
+  <!-- Tutoring Sessions -->
+  <section class="space-y-6">
+    <h2 class="text-2xl font-semibold text-gray-800">
+      An folgenden Terminen gibt es Nachhilfestunden:
+    </h2>
+    @if ( filterSessionsByDate(top?.tutoring_sessions).length === 0) {
+      <p class="text-gray-500 italic">
+        Es gibt noch keine Nachhilfestunden für dieses Thema.
+      </p>
+    }
+    <div class="space-y-4">
+      @if (filterSessionsByDate(top?.tutoring_sessions).length > 0 ){
+        @for (session of top?.tutoring_sessions; track session) {
+
+          @if(session.status === 'offering'){
+            <div
+              class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4
+                   p-6 bg-white/60 border border-gray-200 rounded-2xl shadow-sm
+                   transition-all duration-300 ease-in-out hover:shadow-lg"
+            >
+              <div class="space-y-2 text-gray-800">
+                <p>
+                  <span class="font-semibold text-gray-900">Datum:</span>
+                  {{ session.start_time | date:'dd.MM.yyyy' }}
+                </p>
+                <p>
+                  <span class="font-semibold text-gray-900">Zeit:</span>
+                  {{ session.start_time | date:'HH:mm' }} –
+                  {{ session.end_time | date:'HH:mm' }}
+                </p>
+              </div>
+
+              <div class="flex space-x-4">
+                @if (user.role === 'seeker' && isLoggedIn()) {
+                  <button
+                    (click)="bookSession(session.id)"
+                    class="border border-lila-accent text-sm px-5 py-2 rounded-full
+                         text-lila-dark font-semibold
+                         transition-all duration-200 ease-in-out
+                         hover:bg-lila-accent hover:text-white
+                         hover:shadow-md hover:shadow-lila-accent
+                         cursor-pointer"
+                  >
+                    Termin buchen
+                  </button>
+                }
+              </div>
+            </div>
+          }
+        }
+      }
+      <!-- Form to Request Sessions -->
+      @if(isLoggedIn() && user.role === 'seeker') {
+        <div class="flex flex-col justify-between items-start md:items-center gap-4
+                   p-6 bg-white/40 border border-gray-200 rounded-2xl shadow-sm
+                   transition-all duration-300 ease-in-out hover:shadow-lg">
+        <h3 class="text-xl">Falls du an den vorgegenbenen Terminen keine Zeit hast, kannst du den/der Tutor:in eine Anfrage stellen!</h3>
+          <form [formGroup]="requestForm" (ngSubmit)="submitForm()" class="space-y-6 w-full">
+            <!-- Request -->
+            <label class="flex flex-col my-2 w-full">
+              Anfrage
+              <input
+                class="w-full border border-gray-300 rounded-lg p-2 shadow-sm focus:ring-lila-accent focus:border-lila-accent transition duration-200"
+                formControlName="comment" />
+            </label>
+            @if(requestForm.get('comment')!.hasError('required') && requestForm.get('comment')!.touched){
+              <p class="text-red-500 text-sm">
+                {{ errors['comment'] }}</p>
+            }
+            <label class="flex flex-col my-2">
+              Startzeit
+              <input
+                type="datetime-local"
+                formControlName="start_time"
+                class=" w-max border border-gray-300 rounded-lg p-2 shadow-sm focus:ring-lila-accent focus:border-lila-accent transition duration-200" />
+            </label>
+            @if(requestForm.get('start_time')!.hasError('required') && requestForm.get('start_time')!.touched){
+              <p class="text-red-500 text-sm">
+                {{ errors['start_time'] }}</p>
+            }
+            @if(requestForm.get('start_time')!.hasError('startTimeInPast') && requestForm.get('start_time')!.touched){
+              <p class="text-red-500 text-sm">
+                {{ errors['start_time'] }}</p>
+            }
+
+            <label class="flex flex-col my-2">
+              Endzeit
+              <input
+                type="datetime-local"
+                formControlName="end_time"
+                class="w-max border border-gray-300 rounded-lg p-2 shadow-sm focus:ring-lila-accent focus:border-lila-accent transition duration-200" />
+            </label>
+            @if(requestForm.get('end_time')!.hasError('required') && requestForm.get('end_time')!.touched){
+              <p class="text-red-500 text-sm">
+                {{ errors['end_time'] }}</p>
+            }
+            @if(requestForm.hasError('endTimeBeforeStartTime') && requestForm.get('end_time')?.touched){
+              <p class="text-red-500 text-sm">
+                {{ errors['end_time'] }}</p>
+            }
+            <button
+              [disabled]="requestForm.invalid"
+              type="submit"
+              class="bg-yellow text-gray-800 px-6 py-2 rounded-full hover:bg-yellow-strong disabled:opacity-50 disabled:cursor-not-allowed transition w-max"
+            >
+              Speichern
+            </button>
+          </form>
+        </div>
+      }
+    </div>
+  </section>
+</div>

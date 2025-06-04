@@ -1,0 +1,58 @@
+@let person = user();
+
+@if (person) {
+  <div class="max-w-5xl p-[48px] space-y-8">
+    <!-- Header -->
+    <header class="space-y-2">
+      <h1 class="text-5xl font-extrabold">
+        {{ person.first_name }} {{ person.last_name }}
+      </h1>
+      <p class="text-gray-600 text-lg">
+        <span class="font-semibold">Studiengang:</span> {{ person.study_program }}
+      </p>
+    </header>
+
+    <!-- User Description -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start bg-white/60 border border-gray-200 p-6 rounded-2xl shadow-sm">
+      <div class="md:col-span-2 space-y-2">
+        <h2 class="text-2xl font-semibold text-gray-800">Über mich</h2>
+        <p class="text-gray-700 leading-relaxed">
+          {{ person.description }}
+        </p>
+      </div>
+      <div>
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Kontakt</h2>
+        <p class="flex items-center text-gray-700 space-x-2">
+          <span class="font-medium">✉️</span>
+          <span>{{ person.email }}</span>
+        </p>
+        <p class="flex items-center text-gray-700 space-x-2 mt-2">
+          <span class="font-medium">📞</span>
+          <span>{{ person.phone }}</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- Topics -->
+    @if(person.role ==='tutor'){
+      <section class="space-y-4">
+        <h2 class="text-2xl font-semibold text-gray-800">Fächer</h2>
+        @if ((person.subjects ?? []).length > 0) {
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            @for (subject of person.subjects!; track subject.id) {
+              <a [routerLink]="['/subjects', subject.id]" class="no-underline">
+                <li class="bg-white/80 hover:bg-white/40 border border-gray-200 rounded-xl p-6 shadow hover:shadow-lg transition-all duration-300 ease-in-out cursor-pointer">
+                  <h3 class="text-lg font-bold mb-2">{{ subject.title }}</h3>
+                  <p class="text-gray-600 text-sm leading-snug">{{ subject.description }}</p>
+                </li>
+              </a>
+            }
+          </ul>
+        } @else {
+          <p class="text-gray-500 italic">Diese Tutorin hat noch keine Fächer eingetragen.</p>
+        }
+      </section>
+    }
+
+  </div>
+}

@@ -1,0 +1,46 @@
+<div class="p-[48px] max-w-5xl  flex flex-col space-y-4">
+  <!--Section for Login-->
+  @if (!isLoggedIn()) {
+    <h1 class="text-5xl font-extrabold ">Login</h1>
+    <h2>Melde dich jetzt an!</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="login()">
+      <div>
+        <label>E-Mail</label>
+        <input type="email" id="username"
+               class="w-full rounded-lg border border-gray-300 shadow-sm transition duration-200 mt-1"
+               formControlName="username">
+        @if (errors['username']) {
+          <p class="text-red-500 text-sm">{{ errors['username'] }}</p>
+        }
+        @if (errors['username']) {
+          <p class="text-red-500 text-sm">{{ errors['email'] }}</p>
+        }
+      </div>
+      <div class="mt-2">
+        <label>Passwort</label>
+        <input
+          class="w-full border rounded-lg border-gray-300 shadow-sm transition duration-200 mt-1"
+          type="password" formControlName="password">
+        @if (errors['password']) {
+          <p class="text-red-500 text-sm">{{ errors['password'] }}</p>
+        }
+      </div>
+      <button type="submit"
+              class="bg-yellow px-6 py-2 rounded-full w-max my-2  hover:bg-yellow-strong cursor-pointer transition mt-2"
+              [disabled]="loginForm.invalid">Login
+      </button>
+    </form>
+  }
+
+  <!--Section for Logout-->
+  @if (isLoggedIn()) {
+    <h1 class="text-5xl ">Logout </h1>
+    <h2>Hier kannst du dich wieder abmelden</h2>
+    <div>
+      <button type="button"
+              class="bg-yellow px-6 py-2 rounded-full hover:bg-yellow-strong w-max my-2 cursor-pointer transition mt-2"
+              (click)="logout()">Logout
+      </button>
+    </div>
+  }
+</div>

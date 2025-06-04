@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap');
+@import "tailwindcss";
+
+
+@theme {
+  --color-lila-light: #F6F0FF;
+  --color-lila: #DAC2FE;
+  --color-lila-accent: #5a23d1;
+  --color-lila-dark: #4A2B82;
+  --color-yellow: #FFF691;
+  --color-yellow-accent: #faf2c7;
+  --color-yellow-strong: #F6E05E;
+}
+
+body{
+  min-height: 100vh;
+  color: #1f0822;
+  background: linear-gradient(135deg, var(--color-lila-light), var(--color-lila));
+  font-family: 'Roboto', sans-serif;
+  height: 100%;
+}
+
+h1{
+  font-family: 'Playfair Display', serif;
+}
+
+h2{
+  font-size: 28px;
+}
+
+input{
+  border: 1px solid var(--color-lila-accent);
+  padding: 8px;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+textarea{
+  border: 1px solid var(--color-lila-accent);
+  padding: 8px;
+  background-color: rgba(255, 255, 255, 0.4);
+}

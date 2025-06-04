@@ -1,0 +1,101 @@
+@let sub = subject();
+
+@if (sub) {
+  <div class="max-w-5xl p-[48px] space-y-12">
+    <!-- Header -->
+    <header class="space-y-8">
+      <div class="flex items-center justify-between">
+        <h1 class="text-5xl font-extrabold">{{ sub.title }}</h1>
+        <button
+          [routerLink]="['/tutor/subject-form', sub.id]"
+          class="border border-lila-accent h-max text-sm px-4 py-2 rounded-full
+                                                   text-lila-dark font-semibold
+                                                   transition-all duration-200 ease-in-out
+                                                   hover:bg-lila-accent hover:text-white
+                                                   hover:shadow-md hover:shadow-lila-accent
+                                                   cursor-pointer">
+          Fach bearbeiten
+        </button>
+      </div>
+      <h3 class="text-lg text-gray-700 leading-relaxed max-w-2xl ">{{ sub.description }}</h3>
+    </header>
+    <!-- Topics -->
+    <section class="space-y-6">
+      <div class="flex justify-between mb-4">
+        <h2 class="text-3xl font-semibold text-gray-800 mb-4">
+          Themen
+        </h2>
+      </div>
+        <button
+          [routerLink]="['/tutor/topic-form']"
+          class="bg-yellow px-4 py-2 rounded-full hover:bg-yellow-strong transition cursor-pointer">
+          Neues Thema erstellen
+        </button>
+
+        @if (!sub.topics || sub.topics.length === 0) {
+          <p class="text-gray-500 italic">
+            Es gibt noch keine Themen zu diesem Fach.
+          </p>
+        } @else {
+          <ul class="space-y-4">
+            @for (topic of sub.topics; track topic.id) {
+              <li class="bg-white/40 border border-gray-200 rounded-2xl p-4 shadow-sm">
+                <div class="flex justify-between mb-6">
+                  <div>
+                    <p class="text-gray-800 mb-1">
+                      <span class="font-bold">Thema:</span> {{ topic.title }}
+                    </p>
+                    <p class="text-gray-700 mb-2">
+                      <span class="font-bold">Beschreibung:</span> {{ topic.description }}
+                    </p>
+                  </div>
+                  <button
+                    [routerLink]="['/tutor/topic-form', sub.id, topic.id]"
+                    class="border border-lila-accent h-max text-sm px-4 py-2 rounded-full
+                                                   text-lila-dark font-semibold
+                                                   transition-all duration-200 ease-in-out
+                                                   hover:bg-lila-accent hover:text-white
+                                                   hover:shadow-md hover:shadow-lila-accent
+                                                   cursor-pointer"
+                  >
+                    Thema bearbeiten
+                  </button>
+                </div>
+                <div class="mt-4 ml-4 space-y-2 items-end">
+                  @if (topic.tutoring_sessions?.length === 0) {
+                    <p class="text-gray-500 italic">
+                      Es gibt noch keine Nachhilfestunden zu diesem Thema.
+                    </p>
+                    <button
+                      [routerLink]="['/tutor/session-form']"
+                      class="bg-yellow px-4 py-2 rounded-full hover:bg-yellow-strong transition cursor-pointer">
+                      Neue Nachhilfestunde erstellen
+                    </button>
+                  } @else {
+                    <div class="flex justify-between">
+                      <p class="text-gray-800 font-bold">Nachhilfestunden:</p>
+                      <button
+                        [routerLink]="['/tutor/session-form', sub.id, topic.id]"
+                        class="border border-lila-accent text-sm px-4 py-2 rounded-full text-lila-dark font-semibold transition-all duration-200 ease-in-out hover:bg-lila-accent hover:text-white hover:shadow-md hover:shadow-lila-accent cursor-pointer">
+                        Nachhilfestunden bearbeiten
+                      </button>
+                    </div>
+                  }
+                  @for (session of topic.tutoring_sessions ?? []; track session.id) {
+                    @if (parseDate(session.start_time) > currentDate && session?.status === 'offering') {
+                      <bs-tutoring-session-item
+                        [role]="user()?.role"
+                        [session]="session"
+                        [past]="false"
+                        [openSession]="true"
+                      />
+                    }
+                  }
+                </div>
+              </li>
+            }
+          </ul>
+        }
+    </section>
+  </div>
+}

@@ -1,0 +1,159 @@
+@let currentUser = user();
+<div class="max-w-5xl  p-[48px] space-y-12  rounded-xl">
+  <header class="flex justify-between md:flex-row flex-col">
+    <h1 class="text-5xl font-extrabold">Deine Angebote</h1>
+    <button
+      [routerLink]="['/tutor/session-form']"
+      class="bg-lila-accent px-6 py-2 rounded-full hover:bg-lila text-white transition cursor-pointer">
+      Neue Nachhilfestunde erstellen
+    </button>
+  </header>
+  <!-- Request Section -->
+  <section class="my-8">
+    <div class="flex justify-between mb-4">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+        Deine Anfragen
+      </h2>
+      <button (click)="showRequests.set(!showRequests())"
+              class="flex items-center gap-2 text-left text-xl font-bold text-gray-800 hover:text-emerald-600 transition">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6  hover:text-purple-600 transform transition-transform duration-300 ease-in-out cursor-pointer"
+          [class.rotate-180]="showRequests()"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 9l7 7 7-7"></path>
+        </svg>
+      </button>
+    </div>
+    @if (showRequests()) {
+      @for (request of openRequests(); track request) {
+        @if (request?.status === 'requested') {
+          <bs-request-item
+            [request]="request"
+            (accept)="acceptRequest($event)"
+            (reject)="rejectRequest($event)"
+          ></bs-request-item>
+        }
+      }
+      @if (openRequests().length === 0) {
+        <p class="text-gray-500 italic">Du hast keine offenen Anfragen.</p>
+      }
+    }
+  </section>
+  <!-- Divider -->
+  <div class="my-8">
+    <div class="h-2 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 rounded-full"></div>
+  </div>
+  <!-- Created Tutoring Sessions Section -->
+  <section class="space-y-8">
+    <div class="flex justify-between md:flex-row flex-col ">
+      <h2 class="text-3xl font-semibold text-gray-900">Deine Fächer</h2>
+      <button (click)="showSubjects.set(!showSubjects())"
+              class="flex items-center gap-2 text-left text-xl font-bold text-gray-800 hover:text-emerald-600 transition">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6  hover:text-purple-600 transform transition-transform duration-300 ease-in-out cursor-pointer"
+          [class.rotate-180]="showSubjects()"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M5 9l7 7 7-7"></path>
+        </svg>
+      </button>
+    </div>
+    @if (showSubjects()) {
+      <div class="space-y-8">
+        <button
+          [routerLink]="['/tutor/subject-form']"
+          class="bg-yellow px-6 py-2 rounded-full hover:bg-yellow-strong transition cursor-pointer">
+          Neues Fach erstellen
+        </button>
+        @for (subject of currentUser?.subjects ?? []; track subject.id) {
+          <div class="space-y-4">
+            <!-- Subject-Card -->
+            <a [routerLink]="[subject.id]" class="no-underline">
+              <li
+                class="flex items-center gap-3 bg-white/80 hover:bg-white/40
+                     border border-gray-200 rounded-2xl px-4 py-3 shadow-sm
+                     hover:shadow-lg transition-all duration-300 ease-in-out
+                     cursor-pointer"
+              >
+                <div class="bg-lila-accent w-2.5 h-2.5 rounded-full"></div>
+                <span class="text-gray-800">{{ subject.title }}</span>
+              </li>
+            </a>
+          </div>
+        }
+      </div>
+    }
+  </section>
+  <!-- Booked Tutoring Sessions Section -->
+  <section>
+    <div class="my-8">
+      <div class="h-2 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 rounded-full"></div>
+    </div>
+    <div>
+      <div class="flex justify-between mb-4">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+          gebuchte Nachhilfestunden
+        </h2>
+        <button (click)="showBookedSessions.set(!showBookedSessions())"
+                class="flex items-center gap-2 text-left text-xl font-bold text-gray-800 hover:text-emerald-600 transition">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6  hover:text-purple-600 transform transition-transform duration-300 ease-in-out cursor-pointer"
+            [class.rotate-180]="showBookedSessions()"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M5 9l7 7 7-7"></path>
+          </svg>
+        </button>
+      </div>
+      @if (showBookedSessions()) {
+        <div class="space-y-4">
+          <h3 class="text-xl font-semibold mb-2">Zukünftige Nachhilfestunden</h3>
+          @if (upcomingSessions().length === 0) {
+            <p class="text-gray-500 italic">Du hast keine zukünftigen Nachhilfestunden.</p>
+          } @else {
+            @for (session of upcomingSessions(); track session.id) {
+              <bs-tutoring-session-item
+                [role]="currentUser?.role"
+                [session]="session"
+                [past]="false"
+              />
+            }
+          }
+          <div class="my-4 border-t border-white"></div>
+          <h3 class="text-xl font-semibold mb-2">vergangene Nachhilfestunden</h3>
+          @if (pastSessions().length === 0) {
+            <p class="text-gray-500 italic">Du hast keine vergangenen Nachhilfestunden</p>
+          } @else {
+            @for (session of pastSessions(); track session.id) {
+              <bs-tutoring-session-item
+                [role]="currentUser?.role"
+                [session]="session"
+                [past]="true"
+              />
+            }
+          }
+        </div>
+      }
+    </div>
+  </section>
+</div>
+

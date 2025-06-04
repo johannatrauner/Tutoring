@@ -1,0 +1,80 @@
+<div class="p-12 max-w-5xl">
+  <h1 class="text-5xl font-bold mb-6">Themaformular</h1>
+  @if (noSubjects) {
+    <div class="bg-red-100 border border-red-400 text-red-800 rounded-lg w-full p-6 mb-6 shadow-sm">
+      <h1 class="font-semibold mb-2">Es gibt noch keine Fächer!</h1>
+      <p class="text-sm mb-4">Bitte erstelle ein Fach, bevor du ein Thema erstellst.</p>
+      <button
+        [routerLink]="['tutor/subject-form']"
+        class="bg-yellow px-6 py-2 rounded-full hover:bg-yellow-strong w-max text-lila-dark cursor-pointer transition
+">
+        Fach erstellen
+      </button>
+    </div>
+  }
+  @if (isUpdatingTopic) {
+    <div class="flex flex-col md:flex-row justify-between items-center">
+      <h3 class="text-2xl font-semibold text-gray-800 my-6">Bearbeite hier dein Thema</h3>
+      <button class="bg-red-500 rounded-full px-6 py-2 hover:bg-red-600 transition w-max"
+              (click)="deleteTopic()">
+        <span class="text-white">Thema löschen</span>
+      </button>
+    </div>
+  } @else {
+    <h3 class="text-2xl font-semibold text-gray-800 my-6">Erstelle hier ein unglaublich cooles Thema!</h3>
+  }
+  <!-- Topic Form-->
+  <form (ngSubmit)="submitForm()" [formGroup]="topicForm" class="space-y-6">
+    <input formControlName="id" type="hidden"/>
+    <div class="flex flex-col space-y-2">
+      @if (isUpdatingTopic) {
+        <p class="bg-white/60 rounded-lg text-lg p-4 mb-6 shadow-sm w-max">
+          <span class="font-semibold">Thema:</span> {{ selectedSubjectTitle }} <br>
+          <span class="text-sm text-gray-500">Beim Bearbeiten kann das Fach nicht geändert werden.</span>
+        </p>
+      } @else {
+        <label class="font-medium text-gray-700">
+          Fach auswählen
+          <span class="text-xs text-lila-accent block">
+            (Für ein Thema muss ein Fach erstellt werden.)
+          </span>
+        </label>
+        <select
+          formControlName="subject_id"
+          class="w-full border bg-white/40 border-gray-300 rounded-lg p-2 shadow-sm focus:ring-lila-accent focus:border-lila-accent transition duration-200"
+        >
+          @for (subject of subjects; track subject.id) {
+            <option [value]="subject.id">{{ subject.title }}</option>
+          }
+        </select>
+      }
+    </div>
+    <div class="flex flex-col space-y-2">
+      <label class="font-medium text-gray-700" for="title">Fachtitel</label>
+      <input
+        class="w-full border border-gray-300 rounded-lg p-2 shadow-sm focus:ring-lila-accent focus:border-lila-accent transition duration-200"
+        formControlName="title"
+        id="title"/>
+      @if (errors['title']) {
+        <p class="text-red-500 text-sm">{{ errors['title'] }}</p>
+      }
+    </div>
+    <div class="flex flex-col space-y-2">
+      <label class="font-medium text-gray-700" for="description">Fachbeschreibung</label>
+      <textarea
+        class="w-full border border-gray-300 rounded-lg p-2 shadow-sm focus:ring-lila-accent focus:border-lila-accent transition duration-200"
+        formControlName="description"
+        id="description"
+        rows="4"></textarea>
+      @if (errors['description']) {
+        <p class="text-red-500 text-sm">{{ errors['description'] }}</p>
+      }
+    </div>
+    <button
+      [disabled]="topicForm.invalid"
+      class="bg-yellow text-gray-800 px-6 py-2 rounded-full hover:bg-yellow-strong disabled:opacity-50 disabled:cursor-not-allowed transition w-max"
+      type="submit">
+      Speichern
+    </button>
+  </form>
+</div>

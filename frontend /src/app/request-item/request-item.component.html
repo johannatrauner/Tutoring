@@ -1,0 +1,37 @@
+<div class="bg-white/60 border border-gray-200 p-6 rounded-2xl shadow-sm mb-4">
+  <p class="text-gray-800 mb-2">
+    <span class="font-semibold">Anfrage von: </span>
+    <a
+      class="underline underline-offset-2 hover:text-lila"
+      [routerLink]="['/user', request?.seeker?.id]"
+    >
+      {{ request?.seeker?.first_name }} {{ request?.seeker?.last_name }}
+    </a>
+  </p>
+
+  <p class="mb-2">
+    {{ request.comment }}
+  </p>
+
+  <p class="mb-1">
+    <span class="font-semibold">Startzeit:</span>
+    {{ request.start_time | date: 'dd.MM.yyyy HH:mm' }}
+  </p>
+  <p class="mb-4">
+    <span class="font-semibold">Endzeit:</span>
+    {{ request.end_time | date: 'dd.MM.yyyy HH:mm' }}
+  </p>
+
+  <button
+    (click)="onAccept()"
+    class="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition cursor-pointer mr-2"
+  >
+    Anfrage annehmen
+  </button>
+  <button
+    (click)="onReject()"
+    class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition cursor-pointer"
+  >
+    Anfrage ablehnen
+  </button>
+</div>

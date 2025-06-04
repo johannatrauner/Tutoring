@@ -1,0 +1,63 @@
+@let sub = subject();
+
+@if (sub) {
+  <div class="max-w-5xl p-[48px] space-y-12">
+    <!-- Header -->
+    <header class="space-y-4">
+      <h1 class="text-5xl font-extrabold ">{{ sub.title }}</h1>
+      <h3 class="text-lg text-gray-700 leading-relaxed">{{ sub.description }}</h3>
+    </header>
+
+    <!-- Tutor Info-->
+    <section class="bg-white/60 border border-gray-200 p-6 rounded-2xl shadow-sm space-y-4">
+      <p class="text-gray-800">
+        <span class="font-semibold text-gray-900">Tutor:in für dieses Fach:</span>
+        {{ user()?.first_name }} {{ user()?.last_name }}
+      </p>
+      <button
+        [routerLink]="['/user', user()?.id]"
+        class="border border-lila-accent text-lila-dark font-semibold text-sm px-5 py-2 rounded-full
+               transition-all duration-200 ease-in-out
+               hover:bg-lila-accent hover:text-white
+               hover:shadow-md hover:shadow-lila-accent
+               cursor-pointer"
+      >
+        Profil anzeigen
+      </button>
+    </section>
+
+    <!-- Topics -->
+    <section class="space-y-6">
+      <h3 class="text-2xl font-semibold text-gray-800">
+        Klicke auf ein Thema, um die Nachhilfestunden zu sehen:
+      </h3>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        @for (topic of sub.topics; track topic.id) {
+          <a [routerLink]="['/subjects', sub.id, 'topics', topic.id]" class="no-underline">
+            <li
+              class="flex items-center gap-3 bg-white/80 hover:bg-white/40
+                     border border-gray-200 rounded-2xl px-4 py-3 shadow-sm
+                     hover:shadow-lg transition-all duration-300 ease-in-out
+                     cursor-pointer"
+            >
+              <div class="bg-lila-accent w-2.5 h-2.5 rounded-full"></div>
+              <span class="text-gray-800">{{ topic.title }}</span>
+            </li>
+          </a>
+        }
+      </ul>
+    </section>
+
+    <!-- Back-Button -->
+    <button
+      [routerLink]="['/subjects']"
+      class="border border-lila-accent text-lila-dark font-semibold px-6 py-2 rounded-full
+             transition-all duration-200 ease-in-out
+             hover:bg-lila-accent hover:text-white
+             hover:shadow-md hover:shadow-lila-accent
+             cursor-pointer w-max"
+    >
+      Zurück zur Liste
+    </button>
+  </div>
+}

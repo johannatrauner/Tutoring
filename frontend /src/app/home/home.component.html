@@ -1,0 +1,73 @@
+@let currentUser = user();
+<div class="p-6 pt-20 md:p-[48px] md:pt-[70px]
+         flex flex-col md:flex-row
+         md:space-x-[100px] space-y-8 md:space-y-0
+         bg-gradient-to-r from-lila-light to-lila">
+
+  <!-- Section: Loggedin User -->
+  @if (isLoggedIn()) {
+    <div class="space-y-4">
+      @if (currentUser?.role === 'tutor') {
+        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+          <div class="space-y-4">
+            <h1 class="text-3xl md:text-5xl font-bold ">
+              Willkommen {{ currentUser?.first_name }}
+            </h1>
+            <h2 class="text-lg md:text-2xl ">
+              Erstelle jetzt dein nächstes Nachhilfeangebot!
+            </h2>
+            <button
+              [routerLink]="['/tutor/session-form']"
+              class="bg-yellow px-6 py-2 rounded-full hover:bg-yellow-strong transition cursor-pointer"
+            >Nachhilfestunde erstellen</button>
+          </div>
+          <img src="https://i.imgflip.com/9vskpf.jpg" title="made at imgflip.com" class="w-[450px]"/>
+        </div>
+      } @else if (currentUser?.role === 'seeker') {
+        <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+          <div class="space-y-4">
+        <h2 class="text-lg md:text-2xl ">
+          Buche jetzt dein nächste Nachhilfestunde!
+        </h2>
+            <button
+              [routerLink]="['/subjects']"
+              class="bg-yellow px-6 py-2 rounded-full hover:bg-yellow-strong transition cursor-pointer"
+            >Zu den Fächern</button>
+          </div>
+        <a href="https://imgflip.com/i/9vsl2b"><img src="https://i.imgflip.com/9vsl2b.jpg" title="made at imgflip.com" class="w-[450px]"/></a>
+        </div>
+      }
+    </div>
+  } @else {
+    <!-- Section: All User -->
+    <div class="w-full flex flex-col justify-center space-y-6 md:space-y-8">
+      <h1 class="text-3xl md:text-5xl font-bold ">
+        Die besten Tutor:innen
+      </h1>
+      <h2 class="text-lg md:text-2xl ">
+        Finde deinen perfekten Tutor oder teile selbst dein Wissen!
+      </h2>
+      <div class="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+        <button
+          routerLink="/subjects"
+          class="bg-lila-accent px-6 py-2 rounded-full text-white hover:bg-lila  transition"
+        >
+          Zu den Fächern
+        </button>
+        <button
+          routerLink="/user-list"
+          class="border border-lila-accent px-6 py-2 rounded-full hover:bg-lila-accent  transition"
+        >
+          Zu den Tutor:innen
+        </button>
+      </div>
+    </div>
+    <div class="w-full flex justify-center md:justify-end">
+      <img
+        src="assets/tutor.png"
+        alt="Tutor:innen-Illustration"
+        class="h-48 sm:h-64 md:h-[350px] w-auto"
+      />
+    </div>
+  }
+</div>

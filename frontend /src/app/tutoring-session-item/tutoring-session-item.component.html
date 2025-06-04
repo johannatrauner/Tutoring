@@ -1,0 +1,36 @@
+@let ses = session();
+<div class="p-4 bg-white/60 rounded-lg mb-2"
+     [class.opacity-50]="past()">
+  @if(!openSession()){
+    <p>
+      <span class="font-semibold">Thema:</span>
+      {{ ses?.topic?.title }}
+    </p>
+  }
+  <p>
+    <span class="font-semibold">Datum:</span>
+    {{ ses?.start_time | date:'dd.MM.yyyy' }}
+  </p>
+  <p>
+    <span class="font-semibold">Uhrzeit:</span>
+    {{ ses?.start_time | date:'HH:mm' }} - {{ ses?.end_time | date:'HH:mm' }}
+  </p>
+  <p>
+    <span class="font-semibold">Kommentar:</span>
+    {{ ses?.comment}}
+  </p>
+  @if(!openSession()){
+    @if(role() === 'seeker') {
+      <p>
+        <span class="font-semibold">Tutor:in:</span>
+        <a [routerLink]="['/user', ses?.tutor?.id]" class="underline underline-offset-2 hover:text-lila">
+          {{ ses?.tutor?.first_name }} {{ ses?.tutor?.last_name }}</a>
+      </p>
+    } @else {
+      <p>
+        <span class="font-semibold">Teilnehmer:in: </span>
+        <a class="underline underline-offset-2 hover:text-lila" [routerLink]="['/user', ses?.seeker?.id]">{{ ses?.seeker?.first_name }} {{ ses?.seeker?.last_name }}</a>
+      </p>
+    }
+  }
+</div>

@@ -1,0 +1,9 @@
+<div class="p-[48px]">
+  <h1 class="text-5xl mb-8 font-extrabold">Nachhilfe Fächer</h1>
+  <div class="flex flex-row flex-wrap">
+    @for (subject of subjects(); track subject) {
+      <a [subject]="subject" class="item bs-subject-list-item"></a>
+    }
+  </div>
+</div>
+

@@ -1,0 +1,35 @@
+@let subje = subject();
+<div class="flex flex-col m-2 rounded shadow-md shadow-gray-50 overflow-hidden w-[450px]">
+  <div class="bg-white/80 flex flex-col justify-center py-8 px-12">
+    <h2 class="">{{ subje?.title }}</h2>
+    <h3>bei {{ subje?.tutor?.first_name }} {{ subje?.tutor?.last_name }}</h3>
+  </div>
+  <div class="bg-white/60 py-8 px-12 space-y-4">
+    <h3 class="text-xl">Angebote zu folgenden Themen</h3>
+    <ul>
+      @for (topic of subje?.topics; track topic) {
+        <li class="flex items-center">
+          <div class="bg-yellow-strong w-2 h-2 mr-2 rounded-full"></div>
+          {{ topic.title }}
+        </li>
+      }
+    </ul>
+    <button [routerLink]="['/subjects', subje?.id]"
+            class="w-full
+         border border-lila-accent
+         px-6 py-2 rounded-full
+         text-lila-dark font-semibold
+         shadow-md
+         transition-all duration-300 ease-in-out
+         hover:bg-lila-accent
+         hover:text-white
+         hover:shadow-lg
+         hover:shadow-lila-accent
+         cursor-pointer
+         "
+    >mehr lesen
+    </button>
+  </div>
+</div>
+
+

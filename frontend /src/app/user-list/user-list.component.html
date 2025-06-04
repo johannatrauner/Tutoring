@@ -1,0 +1,40 @@
+@let tutorList = users();
+<div class="p-[48px] h-full">
+  <h1 class="text-5xl mb-6 font-extrabold">Tutor*innen</h1>
+  <div class="flex space-x-12 flex-wrap">
+    @for (tutor of tutorList; track tutor.id) {
+      <div class="flex flex-col m-2 rounded shadow-md shadow-gray-50 overflow-hidden w-[400px]">
+        <div class="bg-white/80 flex flex-col justify-center items-center py-8 px-12">
+          <h2 class="">{{ tutor.first_name }} {{ tutor.last_name }}</h2>
+        </div>
+        <div class="bg-white/60 py-8 px-12 space-y-4 h-full">
+          <h3 class="text-xl">Angebote zu folgenden Fächern</h3>
+          <ul>
+            @for (subject of tutor.subjects; track subject.id) {
+              <li class="flex items-center">
+                <div class="bg-yellow-strong w-2 h-2 mr-2 rounded-full"></div>
+                <span>{{ subject.title }}</span>
+              </li>
+            }
+          </ul>
+          <button
+            [routerLink]="['/user', tutor.id]"
+            class="w-full
+                   border border-lila-accent
+                   px-6 py-2 rounded-full
+                   text-lila-dark font-semibold
+                   shadow-md
+                   transition-all duration-300 ease-in-out
+                   hover:bg-lila-accent
+                   hover:text-white
+                   hover:shadow-lg
+                   hover:shadow-lila-accent
+                   cursor-pointer"
+          >
+            mehr erfahren
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+</div>
